@@ -7,3 +7,4 @@ type(series)
 
 datas = pd.date_range('20250903', periods=30)
 print(datas)
+print("****************")
