@@ -21,3 +21,6 @@ print('---------------')
 print(df)
 print('---------------')
 print(df1)
+print(concatenar['A'])
+pd.__version__
+print(pd)
