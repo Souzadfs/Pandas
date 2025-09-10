@@ -14,7 +14,7 @@ df1 = pd.DataFrame({'A': ['A5', 'A6', 'A7', 'A8'],
 
 frames= [df, df1]
 
-concatenar = pd.concat(frames)
+concatenar = pd.concat(frames, keys=['f1', 'f2'])
 
 print(concatenar)
 print('---------------')
