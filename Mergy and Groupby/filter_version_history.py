@@ -1,7 +1,7 @@
 import pandas as pd
 
 # Carregar o arquivo Excel
-df = pd.read_excel("HistoricoVersoes (5).xlsx", engine="openpyxl")
+df = pd.read_excel("Pasta.xlsx", engine="openpyxl")
 
 # Converter a coluna de data para datetime
 df['DataVersao'] = pd.to_datetime(df['DataVersao'])
