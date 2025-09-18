@@ -1,7 +1,7 @@
 import pandas as pd
 
 # Carregar o arquivo Excel
-df = pd.read_excel("Pasta (1).xlsx", engine="openpyxl")
+df = pd.read_excel("HistoricoVersoes (8).xlsx", engine="openpyxl")
 
 # Converter a coluna de data para datetime
 df['DataVersao'] = pd.to_datetime(df['DataVersao'])
@@ -25,13 +25,14 @@ for id_valor, grupo in filtro_df.groupby('ID'):
     tempos = {
         "ID": id_valor,
         "modo de falha": grupo['modo de falha'].iloc[0],
-        "Praetor": grupo['Praetor'].iloc[0]
+        "Praetor": grupo['Praetor'].iloc[0],
+        "inpeção": grupo['inpeção'].iloc[0]
     }
 
     # Filtrar os status
     aberto = grupo[grupo['Status'].str.contains('Aberto', case=False)]['DataVersao']
     andamento = grupo[grupo['Status'].str.contains('Em andamento', case=False)]['DataVersao']
-    encerrado = grupo[grupo['Status'].str.contains('Encerrado$', case=False)]['DataVersao']
+    Executado = grupo[grupo['Status'].str.contains('Executado$', case=False)]['DataVersao']
     reaberto = grupo[grupo['Status'].str.contains('Reaberto', case=False)]['DataVersao']
     encerrado2 = grupo[grupo['Status'].str.contains('Encerrado 2', case=False)]['DataVersao']
 
@@ -41,9 +42,9 @@ for id_valor, grupo in filtro_df.groupby('ID'):
         tempos['Hora Aberto'] = aberto.dt.strftime('%H:%M:%S').values[0]
         tempos['Hora Em andamento'] = andamento.dt.strftime('%H:%M:%S').values[0]
 
-    if not andamento.empty and not encerrado.empty:
-        tempos['Em andamento -> Encerrado'] = encerrado.values[0] - andamento.values[0]
-        tempos['Hora Encerrado'] = encerrado.dt.strftime('%H:%M:%S').values[0]
+    if not andamento.empty and not Executado.empty:
+        tempos['Em andamento -> Encerrado'] = Executado.values[0] - andamento.values[0]
+        tempos['Hora Executado'] = Executado.dt.strftime('%H:%M:%S').values[0]
 
     if not reaberto.empty and not encerrado2.empty:
         tempos['Reaberto -> Encerrado 2'] = encerrado2.values[0] - reaberto.values[0]
