@@ -1,6 +1,10 @@
 import pandas as pd
-#import matplotlib.pyplot as plot
 
-df = pd.read_excel('HistoricoVersoes1.xlsx')
-df.head()
+# Mostrar todas as colunas
+pd.set_option('display.max_columns', None)
+
+# Carregar o arquivo Excel
+df = pd.read_excel("HistoricoVersoes1.xlsx", engine="openpyxl")
+
+# Exibir o DataFrame
 print(df)
