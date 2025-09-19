@@ -1,10 +1,14 @@
 import pandas as pd
 
 # Carregar o arquivo Excel
-df = pd.read_excel("Pasta (1).xlsx", engine="openpyxl")
+df = pd.read_excel("Pasta (2).xlsx", engine="openpyxl")
 
-# Converter a coluna de data para datetime
-df['DataVersao'] = pd.to_datetime(df['DataVersao'])
+# Converter para datetime com timezone UTC
+df['DataVersao'] = pd.to_datetime(df['DataVersao'], utc=True)
+
+# Converter para horário de São Paulo
+df['DataVersao'] = df['DataVersao'].dt.tz_convert('America/Sao_Paulo')
+
 
 # Mostrar os Praetors disponíveis
 praetors_disponiveis = df['Praetor'].unique()

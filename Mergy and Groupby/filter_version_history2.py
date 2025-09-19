@@ -1,10 +1,14 @@
 import pandas as pd
 
 # Carregar o arquivo Excel
-df = pd.read_excel("HistoricoVersoes (8).xlsx", engine="openpyxl")
+df = pd.read_excel("HistoricoVersoes1.xlsx", engine="openpyxl")
 
-# Converter a coluna de data para datetime
+# Converter para datetime com timezone UTC
 df['DataVersao'] = pd.to_datetime(df['DataVersao'])
+
+# Converter para horário de São Paulo
+df['DataVersao'] = df['DataVersao'].dt.tz_convert('America/Sao_Paulo')
+
 
 # Mostrar os Praetors disponíveis
 praetors_disponiveis = df['Praetor'].unique()
@@ -24,7 +28,7 @@ for id_valor, grupo in filtro_df.groupby('ID'):
     grupo = grupo.sort_values(by='DataVersao')  # garantir ordem cronológica
     tempos = {
         "ID": id_valor,
-        "modo de falha": grupo['modo de falha'].iloc[0],
+        "Modo de Falha": grupo['Modo de Falha'].iloc[0],
         "Descrição do Defeito":grupo['Descrição do Defeito'].iloc[0],
         "Praetor": grupo['Praetor'].iloc[0],
         "inpeção": grupo['inpeção'].iloc[0],
@@ -36,7 +40,8 @@ for id_valor, grupo in filtro_df.groupby('ID'):
     andamento = grupo[grupo['Status'].str.contains('Em andamento', case=False)]['DataVersao']
     Executado = grupo[grupo['Status'].str.contains('Executado$', case=False)]['DataVersao']
     reaberto = grupo[grupo['Status'].str.contains('Reaberto', case=False)]['DataVersao']
-    encerrado2 = grupo[grupo['Status'].str.contains('Encerrado 2', case=False)]['DataVersao']
+    executado2 = grupo[grupo['Status'].str.contains('Executado 2', case=False)]['DataVersao']
+    encerrado_qualidade = grupo[grupo['Status'].str.contains('Encerrado Somente Qualidade e Delegado', case=False)]['DataVersao']
 
     # Calcular os tempos
     if not aberto.empty and not andamento.empty:
@@ -45,13 +50,18 @@ for id_valor, grupo in filtro_df.groupby('ID'):
         tempos['Hora Em andamento'] = andamento.dt.strftime('%H:%M:%S').values[0]
 
     if not andamento.empty and not Executado.empty:
-        tempos['Em andamento -> Encerrado'] = Executado.values[0] - andamento.values[0]
+        tempos['Em andamento -> Executado'] = Executado.values[0] - andamento.values[0]
         tempos['Hora Executado'] = Executado.dt.strftime('%H:%M:%S').values[0]
 
-    if not reaberto.empty and not encerrado2.empty:
-        tempos['Reaberto -> Encerrado 2'] = encerrado2.values[0] - reaberto.values[0]
+    if not reaberto.empty and not executado2.empty:
+        tempos['Reaberto -> Executado 2'] = executado2.values[0] - reaberto.values[0]
         tempos['Hora Reaberto'] = reaberto.dt.strftime('%H:%M:%S').values[0]
-        tempos['Hora Encerrado 2'] = encerrado2.dt.strftime('%H:%M:%S').values[0]
+        tempos['Hora Executado 2'] = executado2.dt.strftime('%H:%M:%S').values[0]
+
+    if not reaberto.empty and not executado2.empty:
+        tempos['Executado 2 -> Encerrado Qualidade'] = encerrado_qualidade.values[0] - executado2.values[0]
+        tempos['Hora Reaberto'] = reaberto.dt.strftime('%H:%M:%S').values[0]
+        tempos['Hora Encerrado Qualidade'] = executado2.dt.strftime('%H:%M:%S').values[0] 
 
     resultados.append(tempos)
 
