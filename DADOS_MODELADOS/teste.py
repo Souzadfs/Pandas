@@ -9,7 +9,6 @@ df['DataVersao'] = pd.to_datetime(df['DataVersao'], utc=True)
 # Converter para horário de São Paulo
 df['DataVersao'] = df['DataVersao'].dt.tz_convert('America/Sao_Paulo')
 
-
 # Mostrar os Praetors disponíveis
 praetors_disponiveis = df['Praetor'].unique()
 print("Praetors disponíveis:", praetors_disponiveis)
@@ -39,18 +38,24 @@ for id_valor, grupo in filtro_df.groupby('ID'):
     reaberto = grupo[grupo['Status'].str.contains('Reaberto', case=False)]['DataVersao']
     encerrado2 = grupo[grupo['Status'].str.contains('Encerrado 2', case=False)]['DataVersao']
 
-    # Calcular os tempos
+    # Calcular os tempos em horas totais
     if not aberto.empty and not andamento.empty:
-        tempos['Aberto -> Em andamento'] = andamento.values[0] - aberto.values[0]
+        delta = andamento.values[0] - aberto.values[0]
+        horas_totais = round(delta / pd.Timedelta(hours=1), 2)
+        tempos['Aberto -> Em andamento (horas)'] = horas_totais
         tempos['Hora Aberto'] = aberto.dt.strftime('%H:%M:%S').values[0]
         tempos['Hora Em andamento'] = andamento.dt.strftime('%H:%M:%S').values[0]
 
     if not andamento.empty and not encerrado.empty:
-        tempos['Em andamento -> Encerrado'] = encerrado.values[0] - andamento.values[0]
+        delta = encerrado.values[0] - andamento.values[0]
+        horas_totais = round(delta / pd.Timedelta(hours=1), 2)
+        tempos['Em andamento -> Encerrado (horas)'] = horas_totais
         tempos['Hora Encerrado'] = encerrado.dt.strftime('%H:%M:%S').values[0]
 
     if not reaberto.empty and not encerrado2.empty:
-        tempos['Reaberto -> Encerrado 2'] = encerrado2.values[0] - reaberto.values[0]
+        delta = encerrado2.values[0] - reaberto.values[0]
+        horas_totais = round(delta / pd.Timedelta(hours=1), 2)
+        tempos['Reaberto -> Encerrado 2 (horas)'] = horas_totais
         tempos['Hora Reaberto'] = reaberto.dt.strftime('%H:%M:%S').values[0]
         tempos['Hora Encerrado 2'] = encerrado2.dt.strftime('%H:%M:%S').values[0]
 
