@@ -1,7 +1,7 @@
 import pandas as pd
 
 # Carregar o arquivo Excel
-df = pd.read_excel("HistoricoVersoes1.xlsx", engine="openpyxl")
+df = pd.read_excel("Pasta1.xlsx", engine="openpyxl")
 
 # Converter para datetime com timezone UTC
 df['DataVersao'] = pd.to_datetime(df['DataVersao'], utc=True)
@@ -38,24 +38,24 @@ for id_valor, grupo in filtro_df.groupby('ID'):
     reaberto = grupo[grupo['Status'].str.contains('Reaberto', case=False)]['DataVersao']
     encerrado2 = grupo[grupo['Status'].str.contains('Encerrado 2', case=False)]['DataVersao']
 
-    # Calcular os tempos em horas totais
+    # Calcular os tempos em horas totais como números decimais
     if not aberto.empty and not andamento.empty:
         delta = andamento.values[0] - aberto.values[0]
-        horas_totais = round(delta / pd.Timedelta(hours=1), 2)
-        tempos['Aberto -> Em andamento (horas)'] = horas_totais
+        horas_totais = delta / pd.Timedelta(hours=1)
+        tempos['Aberto -> Em andamento (horas)'] = float(horas_totais)
         tempos['Hora Aberto'] = aberto.dt.strftime('%H:%M:%S').values[0]
         tempos['Hora Em andamento'] = andamento.dt.strftime('%H:%M:%S').values[0]
 
     if not andamento.empty and not encerrado.empty:
         delta = encerrado.values[0] - andamento.values[0]
-        horas_totais = round(delta / pd.Timedelta(hours=1), 2)
-        tempos['Em andamento -> Encerrado (horas)'] = horas_totais
+        horas_totais = delta / pd.Timedelta(hours=1)
+        tempos['Em andamento -> Encerrado (horas)'] = float(horas_totais)
         tempos['Hora Encerrado'] = encerrado.dt.strftime('%H:%M:%S').values[0]
 
     if not reaberto.empty and not encerrado2.empty:
         delta = encerrado2.values[0] - reaberto.values[0]
-        horas_totais = round(delta / pd.Timedelta(hours=1), 2)
-        tempos['Reaberto -> Encerrado 2 (horas)'] = horas_totais
+        horas_totais = delta / pd.Timedelta(hours=1)
+        tempos['Reaberto -> Encerrado 2 (horas)'] = float(horas_totais)
         tempos['Hora Reaberto'] = reaberto.dt.strftime('%H:%M:%S').values[0]
         tempos['Hora Encerrado 2'] = encerrado2.dt.strftime('%H:%M:%S').values[0]
 
@@ -67,7 +67,7 @@ df_resultados = pd.DataFrame(resultados)
 # Mostrar no terminal
 print(df_resultados)
 
-# Salvar em Excel com nome personalizado
+# Salvar em Excel com número decimal formatado
 nome_arquivo = f"tempos_status_praetor_{praetor_escolhido}.xlsx"
-df_resultados.to_excel(nome_arquivo, index=False)
+df_resultados.to_excel(nome_arquivo, index=False, float_format="%.2f")
 print(f"Arquivo salvo como: {nome_arquivo}")
