@@ -58,10 +58,20 @@ for id_valor, grupo in filtro_df.groupby('ID'):
         tempos['Hora Reaberto'] = reaberto.dt.strftime('%H:%M:%S').values[0]
         tempos['Hora Executado 2'] = executado2.dt.strftime('%H:%M:%S').values[0]
 
+    if not Executado.empty and not encerrado_qualidade.empty:
+        tempos['Executado -> Encerrado Qualidade'] = encerrado_qualidade.values[0] - Executado.values[0]
+        tempos['Hora Executado'] = encerrado_qualidade.dt.strftime('%H:%M:%S').values[0]
+        tempos['Hora Encerrado Qualidade'] = Executado.dt.strftime('%H:%M:%S').values[0] 
+    
     if not reaberto.empty and not executado2.empty:
         tempos['Executado 2 -> Encerrado Qualidade'] = encerrado_qualidade.values[0] - executado2.values[0]
         tempos['Hora Reaberto'] = reaberto.dt.strftime('%H:%M:%S').values[0]
         tempos['Hora Encerrado Qualidade'] = executado2.dt.strftime('%H:%M:%S').values[0] 
+    
+    if not aberto.empty and not encerrado_qualidade.empty:
+        tempos['aberto -> Encerrado Qualidade'] = encerrado_qualidade.values[0] - aberto.values[0]
+        tempos['Hora aberto'] = encerrado_qualidade.dt.strftime('%H:%M:%S').values[0]
+        tempos['Hora Encerrado Qualidade'] = aberto.dt.strftime('%H:%M:%S').values[0] 
 
     resultados.append(tempos)
 
