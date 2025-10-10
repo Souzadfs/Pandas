@@ -1,7 +1,7 @@
 import pandas as pd
 
 # Carregar o arquivo Excel
-df = pd.read_excel("HistoricoVersoes1.xlsx", engine="openpyxl")
+df = pd.read_excel("HistoricoVersoes.xlsx", engine="openpyxl")
 
 # Converter para datetime com timezone UTC
 df['DataVersao'] = pd.to_datetime(df['DataVersao'])
@@ -25,14 +25,15 @@ resultados = []
 
 # Agrupar por ID
 for id_valor, grupo in filtro_df.groupby('ID'):
-    grupo = grupo.sort_values(by='DataVersao')  # garantir ordem cronológica
+    grupo = grupo.sort_values(by='DataVersao') 
     tempos = {
         "ID": id_valor,
         "Modo de Falha": grupo['Modo de Falha'].iloc[0],
         "Descrição do Defeito":grupo['Descrição do Defeito'].iloc[0],
         "Praetor": grupo['Praetor'].iloc[0],
         "inpeção": grupo['inpeção'].iloc[0],
-        "Região": grupo['Região'].iloc[0]
+        "Região": grupo['Região'].iloc[0],
+        "resp. Produção": grupo['resp. Produção'].iloc[0]
     }
 
     # Filtrar os status

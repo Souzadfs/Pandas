@@ -29,7 +29,8 @@ for id_valor, grupo in filtro_df.groupby('ID'):
     tempos = {
         "ID": id_valor,
         "modo de falha": grupo['modo de falha'].iloc[0],
-        "Praetor": grupo['Praetor'].iloc[0]
+        "Praetor": grupo['Praetor'].iloc[0],
+        "resp. Produção": grupo['resp. Produção'].iloc[0]
     }
 
     # Filtrar os status
